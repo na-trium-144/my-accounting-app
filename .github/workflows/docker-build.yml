@@ -1,0 +1,61 @@
+# GitHub Actions Workflow for building a Docker image
+
+name: 'Docker Build'
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  docker-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            arch: amd64
+          - runner: ubuntu-24.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/my-accounting-app:latest-${{ matrix.arch }}
+
+  docker-push-manifest:
+    needs: [docker-build]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create and push manifest
+        env:
+          REPO: ghcr.io/${{ github.repository_owner }}/my-accounting-app
+        run: |
+          docker manifest create ${{ env.REPO }}:latest \
+            ${{ env.REPO }}:latest-amd64 \
+            ${{ env.REPO }}:latest-arm64
+          docker manifest push ${{ env.REPO }}:latest
