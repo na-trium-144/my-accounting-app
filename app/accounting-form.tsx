@@ -111,76 +111,109 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
       <h1 className="text-2xl font-bold mb-6 text-center">家計簿入力</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="overflow-x-auto">
-          <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-2 min-w-[700px]">
-            {/* Headers */}
-            <div className="font-semibold p-2">日付</div>
-            <div className="font-semibold p-2">店名</div>
-            <div className="font-semibold p-2">金額</div>
-            <div className="font-semibold p-2">支払い方法</div>
-            <div className="font-semibold p-2">備考</div>
+          <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-4 md:min-w-[700px]">
+            {/* Headers: Visible only on medium screens and up */}
+            <div className="hidden md:block font-semibold p-2">日付</div>
+            <div className="hidden md:block font-semibold p-2">店名</div>
+            <div className="hidden md:block font-semibold p-2">金額</div>
+            <div className="hidden md:block font-semibold p-2">支払い方法</div>
+            <div className="hidden md:block font-semibold p-2">備考</div>
             <div />
 
             {/* Entry Rows */}
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className="grid grid-cols-subgrid col-span-6 items-center gap-2"
+                className="grid grid-cols-1 md:grid-cols-subgrid md:col-span-6 gap-y-2 gap-x-4 border p-4 rounded-md md:border-none md:p-0"
               >
-                <input
-                  type="date"
-                  value={entry.date}
-                  onChange={(e) => handleInputChange(entry.id, 'date', e.target.value)}
-                  className="p-2 border rounded-md"
-                  required
-                  disabled={isSubmitting}
-                />
-                <input
-                  type="text"
-                  list="store-options"
-                  value={entry.store}
-                  onChange={(e) => handleInputChange(entry.id, 'store', e.target.value)}
-                  className="p-2 border rounded-md"
-                  placeholder="店名を入力"
-                  required
-                  disabled={isSubmitting}
-                />
-                <input
-                  type="number"
-                  value={entry.amount}
-                  onChange={(e) => handleInputChange(entry.id, 'amount', e.target.value === '' ? '' : Number(e.target.value))}
-                  className="p-2 border rounded-md"
-                  placeholder="金額"
-                  required
-                  disabled={isSubmitting}
-                />
-                <input
-                  type="text"
-                  list="payment-method-options"
-                  value={entry.paymentMethod}
-                  onChange={(e) =>
-                    handleInputChange(entry.id, 'paymentMethod', e.target.value)
-                  }
-                  className="p-2 border rounded-md"
-                  placeholder="支払い方法"
-                  required
-                  disabled={isSubmitting}
-                />
-                <input
-                  type="text"
-                  value={entry.notes}
-                  onChange={(e) => handleInputChange(entry.id, 'notes', e.target.value)}
-                  className="p-2 border rounded-md"
-                  placeholder="備考"
-                  disabled={isSubmitting}
-                />
-                <button
-                  type="button"
-                  onClick={() => removeEntry(entry.id)}
-                  className="text-red-500 hover:text-red-700 font-semibold disabled:opacity-50"
-                  disabled={entries.length <= 1 || isSubmitting}
-                >
-                  削除
-                </button>
+                {/* Date */}
+                <div className="grid grid-cols-[80px_1fr] items-center md:contents">
+                  <label htmlFor={`date-${entry.id}`} className="text-sm font-medium md:hidden">日付</label>
+                  <input
+                    id={`date-${entry.id}`}
+                    type="date"
+                    value={entry.date}
+                    onChange={(e) => handleInputChange(entry.id, 'date', e.target.value)}
+                    className="p-2 border rounded-md w-full"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* Store */}
+                <div className="grid grid-cols-[80px_1fr] items-center md:contents">
+                  <label htmlFor={`store-${entry.id}`} className="text-sm font-medium md:hidden">店名</label>
+                  <input
+                    id={`store-${entry.id}`}
+                    type="text"
+                    list="store-options"
+                    value={entry.store}
+                    onChange={(e) => handleInputChange(entry.id, 'store', e.target.value)}
+                    className="p-2 border rounded-md w-full"
+                    placeholder="店名を入力"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* Amount */}
+                <div className="grid grid-cols-[80px_1fr] items-center md:contents">
+                  <label htmlFor={`amount-${entry.id}`} className="text-sm font-medium md:hidden">金額</label>
+                  <input
+                    id={`amount-${entry.id}`}
+                    type="number"
+                    value={entry.amount}
+                    onChange={(e) => handleInputChange(entry.id, 'amount', e.target.value === '' ? '' : Number(e.target.value))}
+                    className="p-2 border rounded-md w-full"
+                    placeholder="金額"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* Payment Method */}
+                <div className="grid grid-cols-[80px_1fr] items-center md:contents">
+                  <label htmlFor={`payment-${entry.id}`} className="text-sm font-medium md:hidden">支払い方法</label>
+                  <input
+                    id={`payment-${entry.id}`}
+                    type="text"
+                    list="payment-method-options"
+                    value={entry.paymentMethod}
+                    onChange={(e) =>
+                      handleInputChange(entry.id, 'paymentMethod', e.target.value)
+                    }
+                    className="p-2 border rounded-md w-full"
+                    placeholder="支払い方法"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* Notes */}
+                <div className="grid grid-cols-[80px_1fr] items-center md:contents">
+                  <label htmlFor={`notes-${entry.id}`} className="text-sm font-medium md:hidden">備考</label>
+                  <input
+                    id={`notes-${entry.id}`}
+                    type="text"
+                    value={entry.notes}
+                    onChange={(e) => handleInputChange(entry.id, 'notes', e.target.value)}
+                    className="p-2 border rounded-md w-full"
+                    placeholder="備考"
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                {/* Remove Button */}
+                <div className="flex justify-end md:contents">
+                  <button
+                    type="button"
+                    onClick={() => removeEntry(entry.id)}
+                    className="text-red-500 hover:text-red-700 font-semibold disabled:opacity-50 mt-2 md:mt-0 md:p-2"
+                    disabled={entries.length <= 1 || isSubmitting}
+                  >
+                    <span className="md:hidden">行を</span>削除
+                  </button>
+                </div>
               </div>
             ))}
           </div>
