@@ -125,7 +125,7 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className="grid grid-cols-1 md:grid-cols-subgrid md:col-span-6 gap-y-2 gap-x-4 border p-4 rounded-md md:border-none md:p-0"
+                className="grid grid-cols-1 md:grid-cols-subgrid md:col-span-6 gap-y-2 gap-x-4 border p-4 rounded-md md:border-none md:p-0 items-center"
               >
                 {/* Date */}
                 <div className="grid grid-cols-[80px_1fr] items-center md:contents">
@@ -189,14 +189,14 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
                 {/* Notes */}
                 <div className="grid grid-cols-[80px_1fr] items-center md:contents">
                   <label htmlFor={`notes-${entry.id}`} className="text-sm font-medium md:hidden">備考</label>
-                  <input
+                  <textarea
                     id={`notes-${entry.id}`}
-                    type="text"
                     value={entry.notes}
                     onChange={(e) => handleInputChange(entry.id, 'notes', e.target.value)}
-                    className="p-2 border rounded-md w-full"
+                    className="p-2 border rounded-md w-full field-sizing-content"
                     placeholder="備考"
                     disabled={isSubmitting}
+                    rows={1}
                   />
                 </div>
 
