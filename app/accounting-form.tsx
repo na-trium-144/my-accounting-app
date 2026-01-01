@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { SuggestionInput } from './SuggestionInput';
 
 // An entry in the accounting book
 type Entry = {
@@ -110,7 +111,7 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
     <main className="container mx-auto p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl font-bold mb-6 text-center">家計簿入力</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="overflow-x-auto">
+        <div className="overflow-visible">
           <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-4 md:min-w-[700px]">
             {/* Headers: Visible only on medium screens and up */}
             <div className="hidden md:block font-semibold p-2">日付</div>
@@ -143,12 +144,11 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
                 {/* Store */}
                 <div className="grid grid-cols-[80px_1fr] items-center md:contents">
                   <label htmlFor={`store-${entry.id}`} className="text-sm font-medium md:hidden">店名</label>
-                  <input
+                  <SuggestionInput
                     id={`store-${entry.id}`}
-                    type="text"
-                    list="store-options"
                     value={entry.store}
-                    onChange={(e) => handleInputChange(entry.id, 'store', e.target.value)}
+                    onChange={(value) => handleInputChange(entry.id, 'store', value)}
+                    options={storeOptions}
                     className="p-2 border rounded-md w-full"
                     placeholder="店名を入力"
                     required
@@ -174,14 +174,11 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
                 {/* Payment Method */}
                 <div className="grid grid-cols-[80px_1fr] items-center md:contents">
                   <label htmlFor={`payment-${entry.id}`} className="text-sm font-medium md:hidden">支払い方法</label>
-                  <input
+                  <SuggestionInput
                     id={`payment-${entry.id}`}
-                    type="text"
-                    list="payment-method-options"
                     value={entry.paymentMethod}
-                    onChange={(e) =>
-                      handleInputChange(entry.id, 'paymentMethod', e.target.value)
-                    }
+                    onChange={(value) => handleInputChange(entry.id, 'paymentMethod', value)}
+                    options={paymentMethodOptions}
                     className="p-2 border rounded-md w-full"
                     placeholder="支払い方法"
                     required
@@ -219,17 +216,6 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
           </div>
         </div>
 
-        {/* Datalists for suggestions */}
-        <datalist id="store-options">
-          {storeOptions.map((option) => (
-            <option key={option} value={option} />
-          ))}
-        </datalist>
-        <datalist id="payment-method-options">
-          {paymentMethodOptions.map((option) => (
-            <option key={option} value={option} />
-          ))}
-        </datalist>
 
         <div className="flex justify-between items-center mt-6">
           <button
