@@ -181,7 +181,6 @@ export function AccountingForm({ storeOptions, paymentMethodOptions }: Accountin
                     options={paymentMethodOptions}
                     className="p-2 border rounded-md w-full"
                     placeholder="支払い方法"
-                    required
                     disabled={isSubmitting}
                   />
                 </div>
