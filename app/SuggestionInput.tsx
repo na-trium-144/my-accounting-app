@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import React, { useState, useRef, useEffect, KeyboardEvent } from "react";
 
 type SuggestionInputProps = {
   id: string;
@@ -34,10 +34,12 @@ export function SuggestionInput({
   const handleSelectSuggestion = (option: string) => {
     onChange(option);
     setShowSuggestions(false);
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (blurTimeout.current !== null) {
+      clearTimeout(blurTimeout.current);
     }
   };
+
+  const blurTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   return (
     <div className="relative">
@@ -47,8 +49,18 @@ export function SuggestionInput({
         type="text"
         value={value}
         onChange={handleInputChange}
-        onFocus={() => setShowSuggestions(true)}
-        onBlur={() => setShowSuggestions(false)}
+        onFocus={() => {
+          setShowSuggestions(true);
+          if (blurTimeout.current !== null) {
+            clearTimeout(blurTimeout.current);
+          }
+        }}
+        onBlur={() => {
+          blurTimeout.current = setTimeout(
+            () => setShowSuggestions(false),
+            200,
+          );
+        }}
         className={className} // Apply className here
         placeholder={placeholder}
         required={required}
@@ -64,7 +76,7 @@ export function SuggestionInput({
             <li
               key={option}
               className={`p-2 cursor-pointer hover:bg-blue-100`}
-              onPointerDown={() => handleSelectSuggestion(option)}
+              onClick={() => handleSelectSuggestion(option)}
             >
               {option}
             </li>
