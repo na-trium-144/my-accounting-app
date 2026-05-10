@@ -3,21 +3,24 @@
 # 1. Builder Stage: Build the Next.js application
 FROM node:alpine AS builder
 
+# Install pnpm
+RUN npm install -g pnpm@10
+
 # Set working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm ci
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy the rest of the source code
 COPY . .
 
 # Build the Next.js application
 # This will generate the .next/standalone directory because of the 'standalone' output config
-RUN npm run build
+RUN pnpm run build
 
 # 2. Runner Stage: Create the final, lean production image
 FROM node:alpine AS runner
